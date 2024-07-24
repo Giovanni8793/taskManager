@@ -43,6 +43,14 @@ export class MyElement extends LitElement {
       color: #999;
       text-align: center;
     }
+    @media (max-width: 600px) {
+      .noTasksMessage {
+        font-size: 1em;
+        font-style: italic;
+        color: #999;
+        text-align: center;
+      }
+    }
   `;
 
   static properties = {

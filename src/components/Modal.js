@@ -14,7 +14,7 @@ export class ModalComponent extends LitElement {
     }
     .modalContent{
       position: fixed;
-      top: 45%;
+      top: 50%;
       left: 50%;
       width: 80%;
       transform: translate(-50%, -50%);
@@ -30,11 +30,11 @@ export class ModalComponent extends LitElement {
       justify-content: center;
     }
     .formGroup {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 16px;
-  width: 80%;
-}
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 16px;
+      width: 80%;
+    }
     .formField{
       width: 100%;
       padding: 12px 16px;
@@ -46,30 +46,35 @@ export class ModalComponent extends LitElement {
     }
     .formField:focus{
       outline: none;
-  border-color: #66afe9; /* Cambia el color del borde al enfocar */
-  box-shadow: 0 0 8px rgba(102, 175, 233, 0.6); /* Sombra al enfocar */
+      border-color: #66afe9; /* Cambia el color del borde al enfocar */
+      box-shadow: 0 0 8px rgba(102, 175, 233, 0.6); /* Sombra al enfocar */
     }
     .formGroup label {
-  width: 100%; /* Ocupa todo el ancho disponible */
-  text-align: left; /* Alinea el texto a la izquierda */
-  margin-bottom: 8px; /* Espacio entre el label y el input */
-  color: #333; /* Color del texto del label */
-}
-  .addButton {
-  display: inline-block;
-  padding: 12px 24px;
-  background-color: #007bff; /* Color de fondo del botón */
-  color: #fff; /* Color del texto */
-  font-size: 16px;
-  font-weight: bold;
-  text-align: center;
-  text-decoration: none;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-  .modal-header {
+      width: 100%; /* Ocupa todo el ancho disponible */
+      text-align: left; /* Alinea el texto a la izquierda */
+      margin-bottom: 8px; /* Espacio entre el label y el input */
+      color: #333; /* Color del texto del label */
+    }
+    .addButton {
+      display: inline-block;
+      padding: 12px 24px;
+      background-color: #007bff; /* Color de fondo del botón */
+      color: #fff; /* Color del texto */
+      font-size: 16px;
+      font-weight: bold;
+      text-align: center;
+      text-decoration: none;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .addButton:disabled {
+      background-color: #ccc; /* Color de fondo cuando está deshabilitado */
+      color: #666; /* Color del texto cuando está deshabilitado */
+      cursor: not-allowed; /* Cambia el cursor a "no permitido" */
+    }
+    .modal-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -94,13 +99,38 @@ export class ModalComponent extends LitElement {
     }
   `;
   static properties = {
-    isOpen: {type: Boolean}
+    isOpen: {type: Boolean},
+    isDisabled: {type: Boolean},
+    title: {type: String},
+    description: {type: String},
+    detail: {type: String}
   }
 
   constructor(){
     super();
-
+    this.isDisabled = true;
     this.isOpen = false;
+    this.title = '';
+    this.description = '';
+    this.detail = '';
+  }
+
+  closeModal(){
+    this.isOpen = false;
+  }
+
+  handleSubmit(e){
+    e.preventDefault()
+     // Acceder directamente a las propiedades del componente
+    const formValues = {
+      title: this.title,
+      description: this.description,
+      details: this.detail
+    };
+
+    console.log(formValues);
+    this.closeModal();
+    
   }
 
   render(){
@@ -115,36 +145,42 @@ export class ModalComponent extends LitElement {
             <button class="closeModal" @click=${this.closeModal}>X</button>
           </div>
           <div class="addForm">
-            <form class="form">
+            <form class="form" @submit=${this.handleSubmit}>
               <div class="formGroup">
                 <label>Title</label>
-                <input class="formField" type="text" placeholder="add a title for the task"/>
+                <input  class="formField" 
+                        @input=${e => this.title = e.target.value}
+                        id="title"
+                        type="text" 
+                        .value=${this.title} 
+                        .invalid=${true}
+                        placeholder="add a title for the task"/>
               </div>
               <div class="formGroup">
                 <label>Description</label>
-                <textarea class="formField" type="text" placeholder="add a description for the task"></textarea>
+                <textarea class="formField"
+                          @input=${e => this.description = e.target.value}
+                          id="description"
+                          type="text" 
+                          placeholder="add a description for the task"></textarea>
               </div>
               <div class="formGroup">
                 <label>Details</label>
-                <textarea class="formField" type="text" placeholder="add a title for the task"></textarea>
+                <textarea class="formField" 
+                          @input=${e => this.detail = e.target.value}
+                          id="details"
+                          type="text" 
+                          placeholder="add a title for the task"></textarea>
+              </div>
+                <button class="addButton">Add task</button>
               </div>
             </form>
           </div>
-          <button @click=${this.addTask} class="addButton">Add task</button>
-          
-        </div>
       </div>
     `;
   }
-  addTask(){
-    console.log('diste clic');
-    this.isOpen = false;
-  }
-
-  closeModal(){
-    console.log('diste clic');
-    this.isOpen = false;
-  }
+  
+  
 }
 
 customElements.define('modal-component', ModalComponent);
