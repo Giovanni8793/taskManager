@@ -1,0 +1,14 @@
+runtime: nodejs
+env: flex
+
+runtime_config:
+  nodejs_version: 18.20.3
+
+handlers:
+- url: /
+  static_files: index.html
+  upload: index.html
+
+- url: /(.+)
+  static_files: \1
+  upload: (.+)
